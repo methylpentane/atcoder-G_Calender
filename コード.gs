@@ -3,23 +3,21 @@ function myFunction() {
   var query = 'from:noreply@atcoder.jp is:unread';
   var threads = GmailApp.search(query,0,3);
   
-  // スレッド毎処理
+  //thread foreach
   if (threads.length !== 0){
     threads.forEach(function(thread, i, array){
+      //既読にしときますね。
       thread.markRead();
-      Logger.log(thread.getId());
-      Logger.log(thread.getLastMessageDate());
-      Logger.log(thread.getFirstMessageSubject());
       
       var messages = thread.getMessages();
       
-      //メッセージ毎処理
+      //message foreach
       //atcoderコンテストページ(複数の可能性もある)から日時やその他情報を取得
       messages.forEach(function(message, i, array){
         body = message.getBody();
         contestPageUrls = body.match(/https:\/\/atcoder.jp\/contests\/.*/g);
         
-        //コンテストページ毎処理
+        //contestpage foreach
         contestPageUrls.forEach(function(contestPageUrl, i, array){
           var response = UrlFetchApp.fetch(contestPageUrl);
           var html = response.getContentText('UTF-8');
@@ -44,6 +42,7 @@ function myFunction() {
           
           //LINE Notifyへの通知送信 やりたければどうぞ
           //sendHttpPost("\n" + body);
+          //同じノリでslackとかにも
         });
       });
     });
